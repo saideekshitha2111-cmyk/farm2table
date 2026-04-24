@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Registration</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #fff8f0, #f8fbf6);
+      color: #222;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #2e7d32;
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #1b5e20;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cfd8cc;
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+
+    .gps-btn {
+      background: #1565c0;
+    }
+
+    .info-box {
+      background: #f7fbf5;
+      border: 1px solid #dfe7dc;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    .success {
+      color: #2e7d32;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+
+    .coords {
+      margin-top: 10px;
+      color: #444;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🍽 Restaurant Registration</h1>
+      <p>Register your restaurant to view farmers, their details, and crops.</p>
+
+      <div class="form-group">
+        <label for="restaurantName">Restaurant Name</label>
+        <input type="text" id="restaurantName" placeholder="Enter restaurant name">
+      </div>
+
+      <div class="form-group">
+        <label for="restaurantEmail">Email ID</label>
+        <input type="email" id="restaurantEmail" placeholder="Enter email id">
+      </div>
+
+      <div class="form-group">
+        <label for="restaurantPhone">Phone Number</label>
+        <input type="text" id="restaurantPhone" placeholder="Enter phone number">
+      </div>
+
+      <div class="form-group">
+        <label for="restaurantLocation">Manual Location / Address</label>
+        <input type="text" id="restaurantLocation" placeholder="Enter restaurant address">
+      </div>
+
+      <div class="actions">
+        <button type="button" class="gps-btn" onclick="getLocation()">Use My GPS Location</button>
+        <button type="button" onclick="registerRestaurant()">Register</button>
+      </div>
+
+      <div id="locationBox" class="info-box" style="display:none;">
+        <b>GPS Location Captured</b>
+        <div id="locationText" class="coords"></div>
+      </div>
+
+      <div id="message" class="success"></div>
+    </div>
+  </div>
+
+  <script>
+    function getLocation() {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          localStorage.setItem("restaurantLatitude", latitude);
+          localStorage.setItem("restaurantLongitude", longitude);
+
+          document.getElementById("locationBox").style.display = "block";
+          document.getElementById("locationText").innerText =
+            "Latitude: " + latitude + " | Longitude: " + longitude;
+        },
+        function(error) {
+          alert("Unable to get GPS location. Please allow location permission.");
+        }
+      );
+    }
+
+    function registerRestaurant() {
+      const restaurantName = document.getElementById("restaurantName").value.trim();
+      const restaurantEmail = document.getElementById("restaurantEmail").value.trim();
+      const restaurantPhone = document.getElementById("restaurantPhone").value.trim();
+      const restaurantLocation = document.getElementById("restaurantLocation").value.trim();
+
+      const latitude = localStorage.getItem("restaurantLatitude") || "";
+      const longitude = localStorage.getItem("restaurantLongitude") || "";
+
+      if (!restaurantName || !restaurantEmail || !restaurantPhone || !restaurantLocation) {
+        alert("Please fill all details.");
+        return;
+      }
+
+      const restaurant = {
+        restaurantName,
+        restaurantEmail,
+        restaurantPhone,
+        restaurantLocation,
+        latitude,
+        longitude
+      };
+
+      localStorage.setItem("restaurant", JSON.stringify(restaurant));
+
+      document.getElementById("message").innerText = "Restaurant registered successfully.";
+
+      setTimeout(() => {
+        window.location = "farmers.html";
+      }, 800);
+    }
+
+    function loadRestaurantData() {
+      const restaurant = JSON.parse(localStorage.getItem("restaurant") || "{}");
+
+      if (restaurant.restaurantName) {
+        document.getElementById("restaurantName").value = restaurant.restaurantName || "";
+        document.getElementById("restaurantEmail").value = restaurant.restaurantEmail || "";
+        document.getElementById("restaurantPhone").value = restaurant.restaurantPhone || "";
+        document.getElementById("restaurantLocation").value = restaurant.restaurantLocation || "";
+
+        if (restaurant.latitude && restaurant.longitude) {
+          document.getElementById("locationBox").style.display = "block";
+          document.getElementById("locationText").innerText =
+            "Latitude: " + restaurant.latitude + " | Longitude: " + restaurant.longitude;
+        }
+      }
+    }
+REST
+    loadRestaurantData();
+  </script>
+</body>
+</html>

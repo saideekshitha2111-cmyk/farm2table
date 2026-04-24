@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Farm2Table</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5faf4;
+      color: #222;
+    }
+
+    .header {
+      background: #2e7d32;
+      color: white;
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .download-btn {
+      background: white;
+      color: #2e7d32;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .top-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      color: #2e7d32;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .section-title {
+      margin: 25px 0 15px;
+      font-size: 24px;
+      color: #2e7d32;
+    }
+
+    .candidate-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .candidate-box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      line-height: 1.8;
+    }
+
+    .candidate-box b {
+      color: #1b5e20;
+    }
+
+    .empty {
+      background: #fff8e1;
+      color: #7a5d00;
+      padding: 18px;
+      border-radius: 14px;
+      font-weight: bold;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Farm2Table Admin Dashboard</h1>
+    <button class="download-btn" onclick="downloadSelectedCandidates()">Download All Selected</button>
+  </div>
+
+  <div class="container">
+    <div class="top-cards">
+      <div class="card">
+        <h3>Total Selected Candidates</h3>
+        <p id="totalSelected">0</p>
+      </div>
+      <div class="card">
+        <h3>Status</h3>
+        <p>Active</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Selected Candidates</h2>
+    <div id="candidateList" class="candidate-list">
+      <div class="empty">Loading selected candidates...</div>
+    </div>
+  </div>
+
+  <script>
+    function loadSelectedCandidates() {
+      const list = document.getElementById("candidateList");
+      const total = document.getElementById("totalSelected");
+
+      try {
+        const candidates = JSON.parse(localStorage.getItem("selectedCandidates")) || [];
+        console.log("Selected candidates from localStorage:", candidates);
+
+        if (!Array.isArray(candidates) || candidates.length === 0) {
+          total.textContent = "0";
+          list.innerHTML = `<div class="empty">No selected candidates found.</div>`;
+          return;
+        }
+
+        total.textContent = candidates.length;
+
+        list.innerHTML = candidates.map(candidate => `
+          <div class="candidate-box">
+            <div><b>Name:</b> ${candidate.fullName || "-"}</div>
+            <div><b>Email:</b> ${candidate.email || "-"}</div>
+            <div><b>Phone:</b> ${candidate.phone || "-"}</div>
+            <div><b>Village:</b> ${candidate.village || "-"}</div>
+            <div><b>Age:</b> ${candidate.age || "-"}</div>
+            <div><b>Occupation:</b> ${candidate.occupation || "-"}</div>
+            <div><b>AI Score:</b> ${candidate.aiScore || "-"}</div>
+            <div><b>Recommendation:</b> ${candidate.recommendation || "-"}</div>
+            <div><b>Folder:</b> ${candidate.folder || "-"}</div>
+            <div class="status">${candidate.resultStatus || "Selected"}</div>
+          </div>
+        `).join("");
+      } catch (error) {
+        console.error("Error loading selected candidates:", error);
+        total.textContent = "0";
+        list.innerHTML = `<div class="empty">Failed to load selected candidates.</div>`;
+      }
+    }
+
+    function downloadSelectedCandidates() {
+      const candidates = JSON.parse(localStorage.getItem("selectedCandidates")) || [];
+
+      if (!candidates.length) {
+        alert("No selected candidates to download.");
+        return;
+      }
+
+      let text = "Selected Candidates List\n\n";
+
+      candidates.forEach((candidate, index) => {
+        text += `Candidate ${index + 1}\n`;
+        text += `Name: ${candidate.fullName || "-"}\n`;
+        text += `Email: ${candidate.email || "-"}\n`;
+        text += `Phone: ${candidate.phone || "-"}\n`;
+        text += `Village: ${candidate.village || "-"}\n`;
+        text += `Age: ${candidate.age || "-"}\n`;
+        text += `Occupation: ${candidate.occupation || "-"}\n`;
+        text += `AI Score: ${candidate.aiScore || "-"}\n`;
+        text += `Recommendation: ${candidate.recommendation || "-"}\n`;
+        text += `Folder: ${candidate.folder || "-"}\n`;
+        text += `Status: ${candidate.resultStatus || "Selected"}\n`;
+        text += `-----------------------------\n`;
+      });
+
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "selected_candidates.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    loadSelectedCandidates();
+  </script>
+</body>
+</html>

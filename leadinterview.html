@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Interview</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#eef8ea,#f8fbf6);
+      margin:0;
+      padding:0;
+    }
+    .container{
+      width:92%;
+      max-width:1000px;
+      margin:30px auto;
+      background:#fff;
+      padding:28px;
+      border-radius:18px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    }
+    h1{
+      text-align:center;
+      color:#2e7d32;
+      margin-bottom:8px;
+    }
+    .subtitle{
+      text-align:center;
+      color:#555;
+      margin-bottom:24px;
+      line-height:1.6;
+    }
+    .welcome{
+      background:#f1f8e9;
+      border-left:5px solid #43a047;
+      padding:14px;
+      border-radius:12px;
+      margin-bottom:20px;
+      color:#1b5e20;
+      line-height:1.6;
+    }
+    .section{
+      margin-top:24px;
+      padding:18px;
+      border:1px solid #dfe7dc;
+      border-radius:14px;
+      background:#fcfffb;
+    }
+    .question-box{
+      background:#f7fbf5;
+      border-left:5px solid #66bb6a;
+      padding:15px;
+      border-radius:12px;
+      margin-bottom:18px;
+    }
+    .question-box h3{
+      margin:0 0 8px;
+      color:#1b5e20;
+      line-height:1.5;
+      font-size:18px;
+    }
+    .question-box p{
+      margin:0 0 12px;
+      color:#555;
+      line-height:1.5;
+    }
+    video, audio{
+      width:100%;
+      margin-top:12px;
+      border-radius:12px;
+    }
+    video{
+      background:#000;
+      max-height:320px;
+    }
+    .button-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    button{
+      padding:12px 18px;
+      border:none;
+      border-radius:10px;
+      background:#2e7d32;
+      color:#fff;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:bold;
+    }
+    button:hover{
+      background:#256628;
+    }
+    button.secondary{
+      background:#546e7a;
+    }
+    .status{
+      margin-top:10px;
+      font-size:14px;
+      color:#555;
+      line-height:1.5;
+      white-space:pre-line;
+    }
+    .recognized-box{
+      margin-top:12px;
+      background:#eef7ff;
+      border-left:4px solid #42a5f5;
+      padding:10px;
+      border-radius:10px;
+      color:#234;
+      font-size:14px;
+      line-height:1.6;
+      min-height:48px;
+    }
+    .submit-btn{
+      width:100%;
+      margin-top:26px;
+      padding:15px;
+      font-size:17px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Lead Interview</h1>
+    <div class="subtitle">
+      Full video interview + 5 random audio answers
+    </div>
+
+    <div class="welcome" id="welcomeText">Welcome</div>
+
+    <div class="section">
+      <h2>Full Interview Video</h2>
+      <div class="question-box">
+        <h3>Start camera and keep full video recording ON during the interview.</h3>
+        <video id="livePreview" autoplay muted playsinline></video>
+        <video id="recordedVideoPreview" controls style="display:none;"></video>
+
+        <div class="button-row">
+          <button type="button" onclick="startCamera()">Start Camera</button>
+          <button type="button" onclick="startFullInterviewVideo()">Start Full Video Recording</button>
+          <button type="button" class="secondary" onclick="stopFullInterviewVideo()">Stop Full Video Recording</button>
+        </div>
+
+        <div class="status" id="videoStatus">Camera not started yet</div>
+      </div>
+    </div>
+
+    <form id="interviewForm">
+      <div class="section">
+        <h2>Random Questions</h2>
+        <div id="questionsContainer"></div>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Interview</button>
+    </form>
+  </div>
+
+ <script>
+  const currentLead = JSON.parse(localStorage.getItem("currentLeadApplication")) || {};
+
+  document.getElementById("welcomeText").innerHTML = `
+    Welcome <b>${currentLead.fullName || "Candidate"}</b> from <b>${currentLead.village || "-"}</b>
+  `;
+
+  const questionBank = [
+    { id: "q1", telugu: "మీ గ్రామంలో మీకు తెలిసిన రైతులు సుమారుగా ఎంతమంది ఉన్నారు?", english: "How many farmers do you know in your village?", keywords: ["farmer","farmers","రైతు","రైతులు","village","గ్రామం"] },
+    { id: "q2", telugu: "మీ గ్రామంలో ఎక్కువగా పండించే ప్రధాన పంటలు ఏవి?", english: "What are the main crops in your village?", keywords: ["crop","crops","పంట","పంటలు","paddy","tomato","mirchi"] },
+    { id: "q3", telugu: "మీరు గ్రామ లీడ్ పాత్ర ఎందుకు చేయాలనుకుంటున్నారు?", english: "Why do you want to become a village lead?", keywords: ["help","lead","support","సహాయం","బాధ్యత"] },
+    { id: "q4", telugu: "ఈ సీజన్‌లో మీ గ్రామంలో ఎక్కువగా లభించే పంట ఏది?", english: "Which crop is most available this season?", keywords: ["season","crop","సీజన్","పంట"] },
+    { id: "q5", telugu: "రైతు చెప్పిన ధర నిజమా కాదా ఎలా నిర్ధారిస్తారు?", english: "How will you verify the farmer's price?", keywords: ["price","market","rate","ధర","మార్కెట్"] },
+    { id: "q6", telugu: "రెస్టారెంట్‌కు వెంటనే సరుకు కావాలి అంటే ఎలా ఏర్పాటు చేస్తారు?", english: "How will you arrange urgent stock for a restaurant?", keywords: ["restaurant","stock","arrange","సరుకు"] },
+    { id: "q7", telugu: "మీ దగ్గర స్మార్ట్‌ఫోన్ ఉందా?", english: "Do you have a smartphone?", keywords: ["phone","smartphone","వాట్సాప్","స్మార్ట్‌ఫోన్"] },
+    { id: "q8", telugu: "రైతులు ఎక్కువగా ఏ మార్కెట్‌కు సరుకు తీసుకెళ్తారు?", english: "Which market do farmers usually go to?", keywords: ["market","mandi","మార్కెట్","మండీ"] },
+    { id: "q9", telugu: "రైతు సరుకు లేదు అంటే మీరు ఏమి చేస్తారు?", english: "What will you do if stock is unavailable?", keywords: ["alternative","check","సరుకు","మరొక రైతు"] },
+    { id: "q10", telugu: "రోజుకు ఎంత సమయం కేటాయించగలరు?", english: "How much time can you dedicate daily?", keywords: ["time","hours","సమయం","గంటలు"] }
+  ];
+
+  function getRandomQuestions(arr, count) {
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }
+
+  const selectedQuestions = getRandomQuestions(questionBank, 5);
+  const questionsContainer = document.getElementById("questionsContainer");
+
+  selectedQuestions.forEach((q, index) => {
+    questionsContainer.innerHTML += `
+      <div class="question-box">
+        <h3>${index + 1}. ${q.telugu}</h3>
+        <p>${q.english}</p>
+        <div class="button-row">
+          <button type="button" onclick="startAnswer('${q.id}')">Start Answer</button>
+          <button type="button" class="secondary" onclick="stopAnswer('${q.id}')">Stop Answer</button>
+        </div>
+        <audio id="audioPreview${q.id}" controls style="display:none;"></audio>
+        <div class="status" id="status${q.id}">Not recorded yet</div>
+        <div class="recognized-box" id="recognizedText${q.id}">Speech-to-text will appear here</div>
+      </div>
+    `;
+  });
+
+  let cameraStream = null;
+  let fullVideoRecorder = null;
+  let fullVideoChunks = [];
+  let fullInterviewVideoRecorded = false;
+  let fullInterviewVideoBlob = null;
+
+  const audioRecorders = {};
+  const audioStreams = {};
+  const audioChunksMap = {};
+  const audioDone = {};
+  const audioMeta = {};
+  const answerTexts = {};
+  const recognizers = {};
+  const audioBlobs = {};
+
+  function getSpeechRecognition() {
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  }
+
+  async function startCamera() {
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const preview = document.getElementById("livePreview");
+      preview.srcObject = cameraStream;
+      await preview.play();
+      document.getElementById("videoStatus").innerText = "Camera started successfully";
+    } catch (error) {
+      document.getElementById("videoStatus").innerText = "Camera/Microphone error: " + error.name;
+    }
+  }
+
+  function startFullInterviewVideo() {
+    if (!cameraStream) {
+      alert("Please start camera first");
+      return;
+    }
+
+    fullVideoChunks = [];
+    fullInterviewVideoRecorded = false;
+    fullInterviewVideoBlob = null;
+
+    try {
+      fullVideoRecorder = new MediaRecorder(cameraStream);
+    } catch (error) {
+      alert("Video recording not supported");
+      return;
+    }
+
+    fullVideoRecorder.ondataavailable = function(event) {
+      if (event.data.size > 0) fullVideoChunks.push(event.data);
+    };
+
+    fullVideoRecorder.onstop = function() {
+      fullInterviewVideoRecorded = true;
+      fullInterviewVideoBlob = new Blob(fullVideoChunks, { type: "video/webm" });
+      const url = URL.createObjectURL(fullInterviewVideoBlob);
+      const preview = document.getElementById("recordedVideoPreview");
+      preview.src = url;
+      preview.style.display = "block";
+      document.getElementById("videoStatus").innerText = "Full interview video recorded successfully";
+    };
+
+    fullVideoRecorder.start();
+    document.getElementById("videoStatus").innerText = "Full interview video recording started";
+  }
+
+  function stopFullInterviewVideo() {
+    if (fullVideoRecorder && fullVideoRecorder.state === "recording") {
+      fullVideoRecorder.stop();
+    } else {
+      alert("Full video recording is not running");
+    }
+  }
+
+  function startSpeechRecognition(questionId) {
+    const SpeechRecognition = getSpeechRecognition();
+    if (!SpeechRecognition) {
+      answerTexts[questionId] = "";
+      document.getElementById("recognizedText" + questionId).innerText = "Speech recognition not supported";
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "te-IN";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    let finalTranscript = "";
+
+    recognition.onresult = function(event) {
+      let interimTranscript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += t + " ";
+        else interimTranscript += t;
+      }
+      answerTexts[questionId] = (finalTranscript + interimTranscript).trim();
+      document.getElementById("recognizedText" + questionId).innerText = answerTexts[questionId] || "Listening...";
+    };
+
+    recognizers[questionId] = recognition;
+    recognition.start();
+  }
+
+  async function startAnswer(questionId) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioStreams[questionId] = stream;
+      audioChunksMap[questionId] = [];
+      answerTexts[questionId] = "";
+      audioDone[questionId] = false;
+
+      const recorder = new MediaRecorder(stream);
+      audioRecorders[questionId] = recorder;
+      const startedAt = Date.now();
+
+      startSpeechRecognition(questionId);
+      document.getElementById("recognizedText" + questionId).innerText = "Listening...";
+
+      recorder.ondataavailable = function(event) {
+        if (event.data.size > 0) audioChunksMap[questionId].push(event.data);
+      };
+
+      recorder.onstop = function() {
+        const durationSeconds = Math.round((Date.now() - startedAt) / 1000);
+        const blob = new Blob(audioChunksMap[questionId], { type: "audio/webm" });
+        audioBlobs[questionId] = blob;
+
+        const url = URL.createObjectURL(blob);
+        document.getElementById("audioPreview" + questionId).src = url;
+        document.getElementById("audioPreview" + questionId).style.display = "block";
+        document.getElementById("status" + questionId).innerText = "Audio recorded successfully (" + durationSeconds + " sec)";
+
+        audioDone[questionId] = true;
+        audioMeta[questionId] = { size: blob.size, durationSeconds };
+
+        if (recognizers[questionId]) {
+          try { recognizers[questionId].stop(); } catch(e) {}
+        }
+        if (audioStreams[questionId]) {
+          audioStreams[questionId].getTracks().forEach(track => track.stop());
+        }
+
+        if (!answerTexts[questionId]) {
+          document.getElementById("recognizedText" + questionId).innerText = "Audio saved. Speech text not captured.";
+        }
+      };
+
+      recorder.start();
+      document.getElementById("status" + questionId).innerText = "Recording started";
+
+      setTimeout(() => {
+        if (recorder.state === "recording") recorder.stop();
+      }, 60000);
+
+    } catch (error) {
+      document.getElementById("status" + questionId).innerText = "Audio recording failed";
+    }
+  }
+
+  function stopAnswer(questionId) {
+    const recorder = audioRecorders[questionId];
+    if (recorder && recorder.state === "recording") recorder.stop();
+    else alert("Audio recording is not running");
+  }
+
+  function scoreRecognizedText(answer, keywords) {
+    if (!answer || !answer.trim()) return 0;
+    let marks = 0;
+    const clean = answer.toLowerCase();
+
+    if (clean.length > 0) marks += 2;
+    if (clean.length >= 20) marks += 2;
+    if (clean.split(/\s+/).length >= 5) marks += 2;
+
+    let found = false;
+    for (const word of keywords) {
+      if (clean.includes(word.toLowerCase())) {
+        found = true;
+        break;
+      }
+    }
+    if (found) marks += 2;
+
+    return marks;
+  }
+
+  function scoreAudioMeta(meta) {
+    if (!meta) return 0;
+    let marks = 0;
+    if (meta.size > 0) marks += 1;
+    if (meta.durationSeconds >= 8) marks += 1;
+    if (meta.durationSeconds >= 15) marks += 1;
+    if (meta.durationSeconds >= 25) marks += 1;
+    return marks;
+  }
+
+  function dataURLtoFile(dataurl, filename) {
+    const arr = dataurl.split(",");
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, { type: mime });
+  }
+
+  async function saveInterviewToBackend(resultData) {
+    const formData = new FormData();
+
+    formData.append("fullName", currentLead.fullName || "");
+    formData.append("email", currentLead.email || "");
+    formData.append("phone", currentLead.phone || "");
+    formData.append("village", currentLead.village || "");
+    formData.append("age", currentLead.age || "");
+    formData.append("occupation", currentLead.occupation || "");
+    formData.append("aiScore", resultData.aiScore || 0);
+    formData.append("resultStatus", resultData.resultCategory || "Rejected");
+    formData.append("recommendation", resultData.recommendation || "");
+
+    if (currentLead.tenthMarksheet) {
+      try {
+        const marksheetFile = dataURLtoFile(currentLead.tenthMarksheet, "10th-marksheet.png");
+        formData.append("tenthMarksheet", marksheetFile);
+      } catch (e) {}
+    }
+
+    if (currentLead.idProof) {
+      try {
+        const idProofFile = dataURLtoFile(currentLead.idProof, "aadhaar.png");
+        formData.append("idProof", idProofFile);
+      } catch (e) {}
+    }
+
+    if (fullInterviewVideoBlob) {
+      const videoFile = new File([fullInterviewVideoBlob], "interview-video.webm", {
+        type: "video/webm"
+      });
+      formData.append("interviewVideo", videoFile);
+    }
+
+    const response = await fetch("http://localhost:5000/save-application", {
+      method: "POST",
+      body: formData
+    });
+
+    return response.json();
+  }
+
+  document.getElementById("interviewForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const allAudioRecorded = selectedQuestions.every(q => audioDone[q.id]);
+
+    if (!fullInterviewVideoRecorded) {
+      alert("Please stop full video recording first.");
+      return;
+    }
+
+    if (!allAudioRecorded) {
+      alert("Please complete all 5 audio answers.");
+      return;
+    }
+
+    let totalScore = 0;
+
+    const profileFields = [
+      currentLead.fullName,
+      currentLead.phone,
+      currentLead.email,
+      currentLead.village,
+      currentLead.age,
+      currentLead.occupation
+    ];
+    const filledProfile = profileFields.filter(v => v && String(v).trim() !== "").length;
+
+    if (filledProfile === 6) totalScore += 20;
+    else if (filledProfile >= 4) totalScore += 10;
+
+    if (currentLead.tenthMarksheet && currentLead.idProof) totalScore += 20;
+    else if (currentLead.tenthMarksheet || currentLead.idProof) totalScore += 10;
+
+    if (fullInterviewVideoRecorded) totalScore += 10;
+
+    selectedQuestions.forEach(q => {
+      totalScore += scoreRecognizedText(answerTexts[q.id] || "", q.keywords);
+      totalScore += scoreAudioMeta(audioMeta[q.id]);
+    });
+
+    let resultCategory = "Rejected";
+    let recommendation = "Candidate scored below 60.";
+
+    if (totalScore >= 60) {
+      resultCategory = "Selected";
+      recommendation = "Candidate scored 60 or above. Recommended for selection.";
+    }
+
+    const resultData = {
+      aiScore: totalScore,
+      resultCategory,
+      recommendation
+    };
+
+    localStorage.setItem("leadInterviewResult", JSON.stringify(resultData));
+
+    try {
+      const backendResult = await saveInterviewToBackend(resultData);
+      console.log("Backend response:", backendResult);
+    } catch (error) {
+      console.error("Backend save error:", error);
+    }
+
+    window.location.href = "result.html";
+  });
+</script>

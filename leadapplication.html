@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Village Lead Application / గ్రామ లీడ్ దరఖాస్తు</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container{
+      width: 92%;
+      max-width: 760px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    h1{
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 8px;
+      font-size: 30px;
+    }
+
+    .subtitle{
+      text-align: center;
+      color: #555;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    label{
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 7px;
+      font-weight: bold;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    input, textarea{
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    input:focus, textarea:focus{
+      border-color: #43a047;
+      box-shadow: 0 0 0 3px rgba(67,160,71,0.12);
+    }
+
+    textarea{
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .note{
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    button{
+      width: 100%;
+      margin-top: 26px;
+      padding: 14px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover{
+      background: #256628;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🌾 Village Lead Application</h1>
+    <div class="subtitle">
+      గ్రామ లీడ్ / కోఆర్డినేటర్ అవ్వడానికి దరఖాస్తు చేసుకోండి<br>
+      Apply here to become a Village Lead / Coordinator
+    </div>
+
+    <form id="leadForm">
+      <label for="fullName">Full Name / పూర్తి పేరు</label>
+      <input type="text" id="fullName" placeholder="Enter your full name / మీ పూర్తి పేరు నమోదు చేయండి" required>
+
+      <label for="phone">Phone Number / ఫోన్ నంబర్</label>
+      <input type="tel" id="phone" placeholder="Enter your phone number / మీ ఫోన్ నంబర్ నమోదు చేయండి" required>
+
+      <label for="email">Email Address / ఈమెయిల్ అడ్రస్</label>
+      <input type="email" id="email" placeholder="Enter your email / మీ ఈమెయిల్ నమోదు చేయండి" required>
+
+      <label for="village">Village Name / గ్రామం పేరు</label>
+      <input type="text" id="village" placeholder="Enter your village name / మీ గ్రామం పేరు నమోదు చేయండి" required>
+
+      <label for="age">Age / వయస్సు</label>
+      <input type="number" id="age" placeholder="Enter your age / మీ వయస్సు నమోదు చేయండి" required>
+
+      <label for="occupation">Occupation / వృత్తి</label>
+      <input type="text" id="occupation" placeholder="Enter your occupation / మీ వృత్తి నమోదు చేయండి" required>
+
+      <label for="tenthMarksheet">Upload 10th Mark List / 10వ తరగతి మార్కుల జాబితా అప్లోడ్ చేయండి</label>
+      <input type="file" id="tenthMarksheet" accept=".jpg,.jpeg,.png,.pdf" required>
+      <div class="note">Please upload your 10th mark list / దయచేసి మీ 10వ తరగతి మార్కుల జాబితాను అప్లోడ్ చేయండి</div>
+
+      <label for="idProof">Upload Aadhaar Proof / ఆధార్ ప్రూఫ్ అప్లోడ్ చేయండి</label>
+      <input type="file" id="idProof" accept=".jpg,.jpeg,.png,.pdf" required>
+      <div class="note">Please upload Aadhaar proof clearly / దయచేసి స్పష్టంగా ఆధార్ ప్రూఫ్ అప్లోడ్ చేయండి</div>
+
+      <button type="submit">Submit Application / దరఖాస్తు పంపండి</button>
+    </form>
+  </div>
+
+  <script>
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById("leadForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const village = document.getElementById("village").value.trim();
+    const age = document.getElementById("age").value.trim();
+    const occupation = document.getElementById("occupation").value.trim();
+
+    const tenthMarksheetFile = document.getElementById("tenthMarksheet").files[0];
+    const idProofFile = document.getElementById("idProof").files[0];
+
+    if (!tenthMarksheetFile || !idProofFile) {
+      alert("Please upload both 10th marksheet and Aadhaar proof.");
+      return;
+    }
+
+    try {
+      const tenthMarksheetBase64 = await fileToBase64(tenthMarksheetFile);
+      const idProofBase64 = await fileToBase64(idProofFile);
+
+      const applicationData = {
+        fullName,
+        phone,
+        email,
+        village,
+        age,
+        occupation,
+        tenthMarksheet: tenthMarksheetBase64,
+        idProof: idProofBase64
+      };
+
+      localStorage.setItem("currentLeadApplication", JSON.stringify(applicationData));
+
+      alert("Application saved successfully. Now proceed to interview.");
+      window.location.href = "leadinterview.html";
+    } catch (error) {
+      console.error("File read error:", error);
+      alert("Failed to save application data.");
+    }
+  });
+</script>

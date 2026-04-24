@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Result</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#eef8ea,#f8fbf6);
+      margin:0;
+      padding:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+    .box{
+      width:90%;
+      max-width:700px;
+      background:#fff;
+      padding:35px;
+      border-radius:18px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+      text-align:center;
+    }
+    h1{
+      color:#2e7d32;
+      margin-bottom:10px;
+    }
+    .details{
+      background:#f7fbf5;
+      border:1px solid #dfe7dc;
+      border-radius:12px;
+      padding:14px;
+      margin:18px 0;
+      text-align:left;
+      line-height:1.8;
+      color:#333;
+    }
+    .score{
+      font-size:34px;
+      color:#1b5e20;
+      font-weight:bold;
+      margin:16px 0;
+    }
+    .badge{
+      display:inline-block;
+      padding:10px 18px;
+      border-radius:999px;
+      background:#f1f8e9;
+      color:#2e7d32;
+      font-weight:bold;
+      margin-bottom:18px;
+    }
+    p{
+      color:#555;
+      font-size:18px;
+      line-height:1.7;
+    }
+    a{
+      display:inline-block;
+      margin-top:22px;
+      padding:12px 20px;
+      background:#2e7d32;
+      color:#fff;
+      text-decoration:none;
+      border-radius:10px;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Interview Result</h1>
+
+    <div class="details">
+      <div><b>Name:</b> <span id="nameText">-</span></div>
+      <div><b>Email:</b> <span id="emailText">-</span></div>
+      <div><b>Phone:</b> <span id="phoneText">-</span></div>
+      <div><b>Village:</b> <span id="villageText">-</span></div>
+    </div>
+
+    <div class="score" id="scoreText">0 / 100</div>
+    <div class="badge" id="resultText">Pending</div>
+    <p id="recommendationText">No result found.</p>
+
+    <a href="farmer.html">login</a>
+  </div>
+
+  <script>
+    const result = JSON.parse(localStorage.getItem("leadInterviewResult"));
+    const lead = JSON.parse(localStorage.getItem("currentLeadApplication")) || {};
+
+    document.getElementById("nameText").innerText = lead.fullName || "-";
+    document.getElementById("emailText").innerText = lead.email || "-";
+    document.getElementById("phoneText").innerText = lead.phone || "-";
+    document.getElementById("villageText").innerText = lead.village || "-";
+
+    if (result) {
+      document.getElementById("scoreText").innerText = result.aiScore + " / 100";
+      document.getElementById("resultText").innerText = result.resultCategory;
+      document.getElementById("recommendationText").innerText = result.recommendation;
+    } else {
+      document.getElementById("scoreText").innerText = "0 / 100";
+      document.getElementById("resultText").innerText = "Pending";
+      document.getElementById("recommendationText").innerText = "No result found.";
+    }
+  </script>
+</body>
+</html>

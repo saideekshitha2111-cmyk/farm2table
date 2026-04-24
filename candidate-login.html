@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Login</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f6faf5;
+      margin:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+    .box{
+      background:#fff;
+      width:90%;
+      max-width:500px;
+      padding:28px;
+      border-radius:16px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.1);
+    }
+    h2{
+      color:#2e7d32;
+      text-align:center;
+      margin-top:0;
+      margin-bottom:20px;
+    }
+    input{
+      width:100%;
+      padding:12px;
+      margin:10px 0;
+      border:1px solid #ccc;
+      border-radius:10px;
+      box-sizing:border-box;
+      font-size:15px;
+    }
+    button{
+      width:100%;
+      padding:12px;
+      background:#2e7d32;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:8px;
+      font-size:15px;
+    }
+    button:hover{
+      background:#256628;
+    }
+    .msg{
+      margin-top:14px;
+      color:#444;
+      line-height:1.7;
+      background:#f8fbf7;
+      border-radius:12px;
+      padding:14px;
+    }
+    .error{
+      color:#c62828;
+      font-weight:bold;
+    }
+    .success{
+      color:#1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Candidate Login</h2>
+
+    <input type="text" id="fullName" placeholder="Enter full name" />
+    <input type="email" id="email" placeholder="Enter email" />
+
+    <button onclick="loginCandidate()">Login</button>
+
+    <div class="msg" id="msg">Enter your name and email to check your result.</div>
+  </div>
+
+  <script>
+    async function loginCandidate() {
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (!fullName || !email) {
+        msg.innerHTML = '<span class="error">Please enter name and email.</span>';
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/candidate-login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ fullName, email })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          msg.innerHTML = `
+            <div class="success">
+              <b>Login successful</b><br><br>
+              <b>Name:</b> ${result.candidate.fullName}<br>
+              <b>Email:</b> ${result.candidate.email}<br>
+              <b>Phone:</b> ${result.candidate.phone || "-"}<br>
+              <b>Village:</b> ${result.candidate.village || "-"}<br>
+              <b>Age:</b> ${result.candidate.age || "-"}<br>
+              <b>Occupation:</b> ${result.candidate.occupation || "-"}<br>
+              <b>Status:</b> ${result.candidate.resultStatus || "-"}<br>
+              <b>Score:</b> ${result.candidate.aiScore || 0}<br>
+              <b>Recommendation:</b> ${result.candidate.recommendation || "-"}
+            </div>
+          `;
+        } else {
+          msg.innerHTML = `<span class="error">${result.message || "Login failed"}</span>`;
+        }
+      } catch (error) {
+        console.error(error);
+        msg.innerHTML = '<span class="error">Server error. Please check backend.</span>';
+      }
+    }
+  </script>
+</body>
+</html>

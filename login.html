@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farm2Table Login</title>
+  <style>
+    body.login-page {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef8ea, #f8fbf6);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #222;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .lang-toggle {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    h1 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+      font-size: 42px;
+      text-align: center;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+      text-align: center;
+    }
+
+    .login-box h2 {
+      margin-top: 0;
+      margin-bottom: 22px;
+      color: #1b5e20;
+      font-size: 24px;
+    }
+
+    .login-box button,
+    .contact-links a {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+
+    .lead-btn {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .restaurant-btn {
+      background: #1b5e20;
+      color: white;
+    }
+
+    .admin-btn {
+      background: #1565c0;
+      color: white;
+    }
+
+    .contact-title {
+      margin-top: 24px;
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .whatsapp-link {
+      background: #25d366;
+      color: white;
+    }
+
+    .email-link {
+      background: #f1f3f4;
+      color: #222;
+      border: 1px solid #ddd;
+    }
+
+    .note {
+      margin-top: 18px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body class="login-page">
+
+  <div class="top-bar">
+    <button class="lang-toggle" onclick="toggleLanguage()">తెలుగు / English</button>
+  </div>
+
+  <h1 id="mainTitle">Farm2Table</h1>
+
+  <div class="login-box">
+    <h2 id="loginHeading">లాగిన్ రకం ఎంచుకోండి</h2>
+
+    <button class="lead-btn" onclick="openLeadInterview()" id="leadBtn">📝 లీడ్ ఇంటర్వ్యూ</button>
+    <button class="restaurant-btn" onclick="loginRestaurant()" id="restaurantBtn">🍽 రెస్టారెంట్ లాగిన్</button>
+    <button class="admin-btn" onclick="loginAdmin()" id="adminBtn">🔐 అడ్మిన్ లాగిన్</button>
+
+    <div class="contact-title" id="contactTitle">సహాయం కావాలా?</div>
+
+    <div class="contact-links">
+      <a class="whatsapp-link" href="https://wa.me/918143938023" target="_blank" id="whatsappLink">
+        అడ్మిన్‌ను WhatsApp లో సంప్రదించండి
+      </a>
+
+      <a class="email-link" href="mailto:saideekshitha@gmail.com?subject=Farm2Table Support Request" id="emailLink">
+        అడ్మిన్‌ను Email ద్వారా సంప్రదించండి
+      </a>
+    </div>
+
+    <div class="note" id="noteText">
+      ఇంటర్వ్యూ సమస్యలు, లాగిన్ సమస్యలు, లేదా అప్లికేషన్ లో ఏదైనా ఇబ్బంది ఉంటే అడ్మిన్‌ను సంప్రదించండి.
+    </div>
+  </div>
+
+  <script>
+    let currentLanguage = "te";
+
+    const translations = {
+      te: {
+        loginHeading: "లాగిన్ రకం ఎంచుకోండి",
+        leadBtn: "📝 లీడ్ ఇంటర్వ్యూ",
+        restaurantBtn: "🍽 రెస్టారెంట్ లాగిన్",
+        adminBtn: "🔐 అడ్మిన్ లాగిన్",
+        contactTitle: "సహాయం కావాలా?",
+        whatsappLink: "అడ్మిన్‌ను WhatsApp లో సంప్రదించండి",
+        emailLink: "అడ్మిన్‌ను Email ద్వారా సంప్రదించండి",
+        noteText: "ఇంటర్వ్యూ సమస్యలు, లాగిన్ సమస్యలు, లేదా అప్లికేషన్ లో ఏదైనా ఇబ్బంది ఉంటే అడ్మిన్‌ను సంప్రదించండి."
+      },
+      en: {
+        loginHeading: "Choose Login Type",
+        leadBtn: "📝 Lead Interview",
+        restaurantBtn: "🍽 Restaurant Login",
+        adminBtn: "🔐 Admin Login",
+        contactTitle: "Need Help?",
+        whatsappLink: "Contact Admin on WhatsApp",
+        emailLink: "Contact Admin by Email",
+        noteText: "If you face interview issues, login issues, or any problem in the application, please contact the admin."
+      }
+    };
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang;
+      document.getElementById("loginHeading").innerText = translations[lang].loginHeading;
+      document.getElementById("leadBtn").innerText = translations[lang].leadBtn;
+      document.getElementById("restaurantBtn").innerText = translations[lang].restaurantBtn;
+      document.getElementById("adminBtn").innerText = translations[lang].adminBtn;
+      document.getElementById("contactTitle").innerText = translations[lang].contactTitle;
+      document.getElementById("whatsappLink").innerText = translations[lang].whatsappLink;
+      document.getElementById("emailLink").innerText = translations[lang].emailLink;
+      document.getElementById("noteText").innerText = translations[lang].noteText;
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === "te" ? "en" : "te";
+      applyLanguage(currentLanguage);
+    }
+
+    function openLeadInterview() {
+      window.location = "leadapplication.html";
+    }
+
+    function loginRestaurant() {
+      window.location = "restaurant.html";
+    }
+
+    function loginAdmin() {
+      window.location = "adminlogin.html";
+    }
+
+    applyLanguage(currentLanguage);
+  </script>
+
+</body>
+</html>

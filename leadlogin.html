@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef8ea, #f8fbf6);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #2e7d32;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 22px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      margin-bottom: 16px;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2e7d32;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-top: 14px;
+      font-weight: bold;
+      min-height: 22px;
+    }
+
+    .error {
+      color: #c62828;
+    }
+
+    .success {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>Lead Login</h1>
+    <p>Only selected leads can login using their email.</p>
+
+    <input type="email" id="leadEmail" placeholder="Enter your email" />
+    <button onclick="loginLead()">Login</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    function loginLead() {
+      const email = document.getElementById("leadEmail").value.trim().toLowerCase();
+      const message = document.getElementById("message");
+      const approvedLeadUsers = JSON.parse(localStorage.getItem("approvedLeadUsers")) || [];
+
+      if (!email) {
+        message.className = "message error";
+        message.innerText = "Please enter your email.";
+        return;
+      }
+
+      const matchedUser = approvedLeadUsers.find(
+        user => user.email && user.email.toLowerCase() === email
+      );
+
+      if (matchedUser) {
+        localStorage.setItem("leadLoggedIn", "true");
+        localStorage.setItem("leadUser", JSON.stringify(matchedUser));
+        message.className = "message success";
+        message.innerText = "Login successful...";
+        setTimeout(() => {
+          window.location.href = "farmer.html";
+        }, 700);
+      } else {
+        message.className = "message error";
+        message.innerText = "You are not an approved lead.";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>📱 OTP Verification</h2>
+
+<input id="phone" placeholder="+91XXXXXXXXXX">
+<button onclick="sendOTP()">Send OTP</button>
+
+<br><br>
+
+<input id="otp" placeholder="Enter OTP">
+<button onclick="verifyOTP()">Verify</button>
+
+<div id="recaptcha-container"></div>
+
+<!-- ✅ SIMPLE Firebase (NO MODULE) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBKfSEV1UyDuAnx5z_bP1X1hSHWYIyYlqI",
+  authDomain: "farmtable-1.firebaseapp.com",
+  projectId: "farmtable-1",
+  storageBucket: "farmtable-1.firebasestorage.app",
+  messagingSenderId: "602878205533",
+  appId: "1:602878205533:web:aa4ebfdbc11e34ecd4f7b4"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+
+// Send OTP
+function sendOTP(){
+const phone = document.getElementById("phone").value
+
+firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
+.then(function(result){
+window.confirmationResult = result
+alert("OTP Sent ✅")
+}).catch(function(error){
+alert(error.message)
+});
+}
+
+// Verify OTP
+function verifyOTP(){
+const code = document.getElementById("otp").value
+
+confirmationResult.confirm(code).then(function(){
+alert("Verified ✅")
+}).catch(function(){
+alert("Wrong OTP ❌")
+});
+}
+
+</script>
+
+</body>
+</html>

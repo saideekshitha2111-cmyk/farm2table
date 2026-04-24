@@ -1,0 +1,28 @@
+body{
+font-family:Arial;
+text-align:center;
+background:#f4f6f9;
+}
+
+.login-box{
+margin-top:100px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+background:#27ae60;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.product-card{
+background:white;
+padding:20px;
+margin:20px auto;
+width:200px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}

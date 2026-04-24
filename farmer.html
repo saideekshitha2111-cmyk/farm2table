@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farm2Table Farmer Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f8f7;
+      color: #1f1f1f;
+    }
+
+    .topbar {
+      background: linear-gradient(90deg, #1b5e20, #2e7d32);
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .top-links a {
+      text-decoration: none;
+      background: white;
+      color: #1b5e20;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .lang-btn {
+      text-decoration: none;
+      background: #1565c0;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #dff6dd, #ffffff);
+      padding: 30px 20px;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      color: #1b5e20;
+      font-size: 38px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #4b4b4b;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    .stat-card h3 {
+      margin: 0 0 8px;
+      color: #2e7d32;
+      font-size: 15px;
+    }
+
+    .stat-card p {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+      color: #1f1f1f;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 20px 30px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #1b5e20;
+      font-size: 22px;
+    }
+
+    .info-row {
+      margin: 8px 0;
+      line-height: 1.7;
+    }
+
+    .info-row b {
+      color: #1b5e20;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #1b5e20;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d8e0d7;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background: #fcfffc;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .btn {
+      border: none;
+      background: #2e7d32;
+      color: white;
+      padding: 13px 18px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-top: 8px;
+    }
+
+    .btn.secondary {
+      background: #1565c0;
+    }
+
+    .btn.warn {
+      background: #ef6c00;
+    }
+
+    .section-title {
+      margin: 28px 0 14px;
+      color: #1b5e20;
+      font-size: 26px;
+    }
+
+    .crop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .crop-card {
+      background: white;
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .crop-badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .crop-card h3 {
+      margin: 0 0 8px;
+      color: #1b5e20;
+      font-size: 22px;
+    }
+
+    .crop-card p {
+      margin: 6px 0;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .price {
+      font-size: 26px;
+      font-weight: bold;
+      color: #111;
+      margin: 12px 0;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .success-msg {
+      color: #2e7d32;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+
+    .empty {
+      background: #fff8e1;
+      color: #7a5d00;
+      padding: 18px;
+      border-radius: 14px;
+      font-weight: bold;
+    }
+
+    .demo-tag {
+      display: inline-block;
+      margin-top: 12px;
+      background: #fff3cd;
+      color: #7a5d00;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner,
+      .grid-2,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand" id="brandText">🌾 Farm2Table Farmer Hub</div>
+    <div class="top-links">
+      <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">తెలుగు / English</button>
+      <a href="farmers.html" id="savedFarmersLink">Saved Farmers</a>
+      <a href="restaurant.html" id="restaurantViewLink">Restaurant View</a>
+      <a href="index.html" id="homeLink">Home</a>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <h1 id="heroTitle">Welcome Farmer Partner</h1>
+        <p id="heroDesc">
+          Manage lead details, banking details, and crops in one place.
+          Real lead details entered by you will stay saved permanently in local storage.
+        </p>
+        <div class="demo-tag" id="demoTag">Demo database + permanent saved data enabled</div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <h3 id="statTotalCrops">Total Crops Added</h3>
+          <p id="totalCrops">0</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="statFarmerStatus">Farmer Status</h3>
+          <p id="statFarmerStatusValue">Active</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="statProfileCompletion">Profile Completion</h3>
+          <p id="profileStatus">0%</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="statMarketplaceReach">Marketplace Reach</h3>
+          <p id="statMarketplaceReachValue">24x7</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <div class="card">
+      <h2 id="leadDetailsTitle">Lead Details</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="leadFullName" id="labelLeadName">Lead Name</label>
+          <input type="text" id="leadFullName" placeholder="Enter lead full name">
+        </div>
+
+        <div class="form-group">
+          <label for="leadEmail" id="labelLeadEmail">Lead Email ID</label>
+          <input type="email" id="leadEmail" placeholder="Enter lead email id">
+        </div>
+
+        <div class="form-group">
+          <label for="leadPhone" id="labelLeadPhone">Lead Phone Number</label>
+          <input type="text" id="leadPhone" placeholder="Enter lead phone number">
+        </div>
+
+        <div class="form-group">
+          <label for="leadVillage" id="labelLeadVillage">Village / Location</label>
+          <input type="text" id="leadVillage" placeholder="Enter village or location">
+        </div>
+      </div>
+
+      <button class="btn" onclick="saveLeadDetails()" id="saveLeadBtn">Save Lead Details</button>
+      <button class="btn warn" onclick="resetToDemoLead()" id="resetDemoBtn">Reset Demo Lead</button>
+      <div id="leadMessage" class="success-msg"></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h2 id="savedLeadPreviewTitle">Saved Lead Preview</h2>
+        <div id="leadDetails"></div>
+      </div>
+
+      <div class="card">
+        <h2 id="bankPreviewTitle">Bank Details Preview</h2>
+        <div id="savedBankPreview" class="muted">No bank details saved yet.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="farmerProfileTitle">Complete Farmer Profile</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="farmerName" id="labelFarmerName">Farmer Name</label>
+          <input type="text" id="farmerName" placeholder="Enter farmer name">
+        </div>
+
+        <div class="form-group">
+          <label for="location" id="labelFarmerLocation">Farmer Location / Village</label>
+          <input type="text" id="location" placeholder="Enter farmer location">
+        </div>
+
+        <div class="form-group">
+          <label for="bankName" id="labelBankName">Bank Name</label>
+          <input type="text" id="bankName" placeholder="Enter bank name">
+        </div>
+
+        <div class="form-group">
+          <label for="accountHolder" id="labelAccountHolder">Account Holder Name</label>
+          <input type="text" id="accountHolder" placeholder="Enter account holder name">
+        </div>
+
+        <div class="form-group">
+          <label for="accountNumber" id="labelAccountNumber">Account Number</label>
+          <input type="text" id="accountNumber" placeholder="Enter account number">
+        </div>
+
+        <div class="form-group">
+          <label for="ifscCode" id="labelIfscCode">IFSC Code</label>
+          <input type="text" id="ifscCode" placeholder="Enter IFSC code">
+        </div>
+      </div>
+
+      <button class="btn" onclick="saveFarmer()" id="saveFarmerBtn">Save Farmer Profile</button>
+      <div id="profileMessage" class="success-msg"></div>
+    </div>
+
+    <h2 class="section-title" id="addCropTitle">Add New Crop</h2>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="cropName" id="labelCropName">Crop Name</label>
+          <input type="text" id="cropName" placeholder="Enter crop name">
+        </div>
+
+        <div class="form-group">
+          <label for="cropPrice" id="labelCropPrice">Price per kg</label>
+          <input type="number" id="cropPrice" placeholder="Enter crop price">
+        </div>
+
+        <div class="form-group">
+          <label for="cropQuantity" id="labelCropQty">Quantity (kg)</label>
+          <input type="number" id="cropQuantity" placeholder="Enter quantity in kg">
+        </div>
+
+        <div class="form-group">
+          <label for="cropCategory" id="labelCropCategory">Category</label>
+          <select id="cropCategory">
+            <option value="Vegetable">Vegetable</option>
+            <option value="Grain">Grain</option>
+            <option value="Leafy">Leafy</option>
+            <option value="Fruit">Fruit</option>
+            <option value="Pulse">Pulse</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label for="cropDescription" id="labelCropDesc">Description</label>
+          <textarea id="cropDescription" placeholder="Fresh quality, bulk stock, same day harvest, organic, etc."></textarea>
+        </div>
+      </div>
+
+      <button class="btn secondary" onclick="addCrop()" id="addCropBtn">Add Crop to Marketplace</button>
+      <div id="cropMessage" class="success-msg"></div>
+    </div>
+
+    <h2 class="section-title" id="yourCropsTitle">Your Crops</h2>
+    <div id="farmerCrops" class="crop-grid"></div>
+
+  </div>
+
+  <script>
+    let currentLanguage = "en";
+
+    const translations = {
+      en: {
+        brandText: "🌾 Farm2Table Farmer Hub",
+        savedFarmersLink: "Saved Farmers",
+        restaurantViewLink: "Restaurant View",
+        homeLink: "Home",
+        heroTitle: "Welcome Farmer Partner",
+        heroDesc: "Manage lead details, banking details, and crops in one place. Real lead details entered by you will stay saved permanently in local storage.",
+        demoTag: "Demo database + permanent saved data enabled",
+        statTotalCrops: "Total Crops Added",
+        statFarmerStatus: "Farmer Status",
+        statFarmerStatusValue: "Active",
+        statProfileCompletion: "Profile Completion",
+        statMarketplaceReach: "Marketplace Reach",
+        statMarketplaceReachValue: "24x7",
+        leadDetailsTitle: "Lead Details",
+        labelLeadName: "Lead Name",
+        labelLeadEmail: "Lead Email ID",
+        labelLeadPhone: "Lead Phone Number",
+        labelLeadVillage: "Village / Location",
+        saveLeadBtn: "Save Lead Details",
+        resetDemoBtn: "Reset Demo Lead",
+        savedLeadPreviewTitle: "Saved Lead Preview",
+        bankPreviewTitle: "Bank Details Preview",
+        farmerProfileTitle: "Complete Farmer Profile",
+        labelFarmerName: "Farmer Name",
+        labelFarmerLocation: "Farmer Location / Village",
+        labelBankName: "Bank Name",
+        labelAccountHolder: "Account Holder Name",
+        labelAccountNumber: "Account Number",
+        labelIfscCode: "IFSC Code",
+        saveFarmerBtn: "Save Farmer Profile",
+        addCropTitle: "Add New Crop",
+        labelCropName: "Crop Name",
+        labelCropPrice: "Price per kg",
+        labelCropQty: "Quantity (kg)",
+        labelCropCategory: "Category",
+        labelCropDesc: "Description",
+        addCropBtn: "Add Crop to Marketplace",
+        yourCropsTitle: "Your Crops",
+        noBankDetails: "No bank details saved yet.",
+        noCrops: "No crops added yet.",
+        leadSaved: "Lead details saved permanently.",
+        demoReset: "Demo lead restored.",
+        farmerSaved: "Farmer profile saved successfully.",
+        cropSaved: "Crop added successfully to marketplace.",
+        alertFillLead: "Please fill all lead details.\nదయచేసి అన్ని లీడ్ వివరాలు నమోదు చేయండి.",
+        alertFillFarmer: "Please fill all farmer and bank details.\nదయచేసి రైతు మరియు బ్యాంక్ వివరాలన్నీ నమోదు చేయండి.",
+        alertSaveFarmerFirst: "Please save farmer profile first.\nముందుగా రైతు ప్రొఫైల్ సేవ్ చేయండి.",
+        alertFillCrop: "Please fill crop name, price and quantity.\nదయచేసి పంట పేరు, ధర, పరిమాణం నమోదు చేయండి.",
+        previewLeadName: "Lead Name",
+        previewLeadEmail: "Lead Email ID",
+        previewLeadPhone: "Lead Phone Number",
+        previewVillage: "Village",
+        previewBankName: "Bank Name",
+        previewAccountHolder: "Account Holder",
+        previewAccountNumber: "Account Number",
+        previewIfsc: "IFSC Code",
+        cropCardQuantity: "Quantity",
+        cropCardFarmer: "Farmer",
+        cropCardLeadPhone: "Lead Phone",
+        cropCardLeadEmail: "Lead Email",
+        cropCardLocation: "Location",
+        cropCardDescription: "Description",
+        cropDefaultBadge: "Crop"
+      },
+      te: {
+        brandText: "🌾 ఫార్మ్2టేబుల్ రైతు హబ్",
+        savedFarmersLink: "సేవ్ చేసిన రైతులు",
+        restaurantViewLink: "రెస్టారెంట్ వీక్షణ",
+        homeLink: "హోమ్",
+        heroTitle: "స్వాగతం రైతు భాగస్వామి",
+        heroDesc: "లీడ్ వివరాలు, బ్యాంక్ వివరాలు, మరియు పంటలను ఒకే చోట నిర్వహించండి. మీరు నమోదు చేసిన నిజమైన లీడ్ వివరాలు లోకల్ స్టోరేజ్‌లో శాశ్వతంగా సేవ్ అవుతాయి.",
+        demoTag: "డెమో డేటాబేస్ + శాశ్వత సేవ్ డేటా అందుబాటులో ఉంది",
+        statTotalCrops: "మొత్తం జోడించిన పంటలు",
+        statFarmerStatus: "రైతు స్థితి",
+        statFarmerStatusValue: "యాక్టివ్",
+        statProfileCompletion: "ప్రొఫైల్ పూర్తి",
+        statMarketplaceReach: "మార్కెట్ అందుబాటు",
+        statMarketplaceReachValue: "24x7",
+        leadDetailsTitle: "లీడ్ వివరాలు",
+        labelLeadName: "లీడ్ పేరు",
+        labelLeadEmail: "లీడ్ ఈమెయిల్ ఐడి",
+        labelLeadPhone: "లీడ్ ఫోన్ నంబర్",
+        labelLeadVillage: "గ్రామం / ప్రాంతం",
+        saveLeadBtn: "లీడ్ వివరాలు సేవ్ చేయండి",
+        resetDemoBtn: "డెమో లీడ్ రీసెట్ చేయండి",
+        savedLeadPreviewTitle: "సేవ్ చేసిన లీడ్ ప్రివ్యూ",
+        bankPreviewTitle: "బ్యాంక్ వివరాల ప్రివ్యూ",
+        farmerProfileTitle: "పూర్తి రైతు ప్రొఫైల్",
+        labelFarmerName: "రైతు పేరు",
+        labelFarmerLocation: "రైతు గ్రామం / ప్రాంతం",
+        labelBankName: "బ్యాంక్ పేరు",
+        labelAccountHolder: "ఖాతా యజమాని పేరు",
+        labelAccountNumber: "ఖాతా సంఖ్య",
+        labelIfscCode: "ఐఎఫ్‌ఎస్‌సీ కోడ్",
+        saveFarmerBtn: "రైతు ప్రొఫైల్ సేవ్ చేయండి",
+        addCropTitle: "కొత్త పంటను జోడించండి",
+        labelCropName: "పంట పేరు",
+        labelCropPrice: "కిలోకు ధర",
+        labelCropQty: "పరిమాణం (కిలోలు)",
+        labelCropCategory: "వర్గం",
+        labelCropDesc: "వివరణ",
+        addCropBtn: "మార్కెట్‌కి పంటను జోడించండి",
+        yourCropsTitle: "మీ పంటలు",
+        noBankDetails: "ఇంకా బ్యాంక్ వివరాలు సేవ్ కాలేదు.",
+        noCrops: "ఇంకా ఎలాంటి పంటలు జోడించలేదు.",
+        leadSaved: "లీడ్ వివరాలు శాశ్వతంగా సేవ్ అయ్యాయి.",
+        demoReset: "డెమో లీడ్ తిరిగి అమర్చబడింది.",
+        farmerSaved: "రైతు ప్రొఫైల్ విజయవంతంగా సేవ్ అయింది.",
+        cropSaved: "పంట విజయవంతంగా మార్కెట్‌కి జోడించబడింది.",
+        alertFillLead: "Please fill all lead details.\nదయచేసి అన్ని లీడ్ వివరాలు నమోదు చేయండి.",
+        alertFillFarmer: "Please fill all farmer and bank details.\nదయచేసి రైతు మరియు బ్యాంక్ వివరాలన్నీ నమోదు చేయండి.",
+        alertSaveFarmerFirst: "Please save farmer profile first.\nముందుగా రైతు ప్రొఫైల్ సేవ్ చేయండి.",
+        alertFillCrop: "Please fill crop name, price and quantity.\nదయచేసి పంట పేరు, ధర, పరిమాణం నమోదు చేయండి.",
+        previewLeadName: "లీడ్ పేరు",
+        previewLeadEmail: "లీడ్ ఈమెయిల్ ఐడి",
+        previewLeadPhone: "లీడ్ ఫోన్ నంబర్",
+        previewVillage: "గ్రామం",
+        previewBankName: "బ్యాంక్ పేరు",
+        previewAccountHolder: "ఖాతా యజమాని",
+        previewAccountNumber: "ఖాతా సంఖ్య",
+        previewIfsc: "ఐఎఫ్‌ఎస్‌సీ కోడ్",
+        cropCardQuantity: "పరిమాణం",
+        cropCardFarmer: "రైతు",
+        cropCardLeadPhone: "లీడ్ ఫోన్",
+        cropCardLeadEmail: "లీడ్ ఈమెయిల్",
+        cropCardLocation: "ప్రాంతం",
+        cropCardDescription: "వివరణ",
+        cropDefaultBadge: "పంట"
+      }
+    };
+
+    function t(key) {
+      return translations[currentLanguage][key] || key;
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = value;
+    }
+
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem("farmerDashboardLang", lang);
+      document.documentElement.lang = lang;
+
+      setText("brandText", t("brandText"));
+      setText("savedFarmersLink", t("savedFarmersLink"));
+      setText("restaurantViewLink", t("restaurantViewLink"));
+      setText("homeLink", t("homeLink"));
+      setText("heroTitle", t("heroTitle"));
+      setText("heroDesc", t("heroDesc"));
+      setText("demoTag", t("demoTag"));
+      setText("statTotalCrops", t("statTotalCrops"));
+      setText("statFarmerStatus", t("statFarmerStatus"));
+      setText("statFarmerStatusValue", t("statFarmerStatusValue"));
+      setText("statProfileCompletion", t("statProfileCompletion"));
+      setText("statMarketplaceReach", t("statMarketplaceReach"));
+      setText("statMarketplaceReachValue", t("statMarketplaceReachValue"));
+      setText("leadDetailsTitle", t("leadDetailsTitle"));
+      setText("labelLeadName", t("labelLeadName"));
+      setText("labelLeadEmail", t("labelLeadEmail"));
+      setText("labelLeadPhone", t("labelLeadPhone"));
+      setText("labelLeadVillage", t("labelLeadVillage"));
+      setText("saveLeadBtn", t("saveLeadBtn"));
+      setText("resetDemoBtn", t("resetDemoBtn"));
+      setText("savedLeadPreviewTitle", t("savedLeadPreviewTitle"));
+      setText("bankPreviewTitle", t("bankPreviewTitle"));
+      setText("farmerProfileTitle", t("farmerProfileTitle"));
+      setText("labelFarmerName", t("labelFarmerName"));
+      setText("labelFarmerLocation", t("labelFarmerLocation"));
+      setText("labelBankName", t("labelBankName"));
+      setText("labelAccountHolder", t("labelAccountHolder"));
+      setText("labelAccountNumber", t("labelAccountNumber"));
+      setText("labelIfscCode", t("labelIfscCode"));
+      setText("saveFarmerBtn", t("saveFarmerBtn"));
+      setText("addCropTitle", t("addCropTitle"));
+      setText("labelCropName", t("labelCropName"));
+      setText("labelCropPrice", t("labelCropPrice"));
+      setText("labelCropQty", t("labelCropQty"));
+      setText("labelCropCategory", t("labelCropCategory"));
+      setText("labelCropDesc", t("labelCropDesc"));
+      setText("addCropBtn", t("addCropBtn"));
+      setText("yourCropsTitle", t("yourCropsTitle"));
+
+      const farmer = JSON.parse(localStorage.getItem("farmer") || "{}");
+      const preview = document.getElementById("savedBankPreview");
+      if (!farmer.bankName && preview) {
+        preview.innerHTML = t("noBankDetails");
+      }
+
+      loadLeadDetails();
+      loadSavedFarmer();
+      displayCrops();
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === "en" ? "te" : "en";
+      applyLanguage(currentLanguage);
+    }
+
+    function getDemoLead() {
+      return {
+        fullName: "Ravi Kumar",
+        email: "ravikumar@gmail.com",
+        phone: "9876543210",
+        village: "Warangal Rural"
+      };
+    }
+
+    function getDemoFarmer(lead) {
+      return {
+        id: "F001",
+        name: lead.fullName,
+        email: lead.email,
+        phone: lead.phone,
+        location: lead.village,
+        bankName: "State Bank of India",
+        accountHolder: lead.fullName,
+        accountNumber: "123456789012",
+        ifscCode: "SBIN0001234",
+        crops: []
+      };
+    }
+
+    function getDemoCrops(lead) {
+      return [
+        {
+          id: "C001",
+          name: "Tomato",
+          price: "32",
+          quantity: "120",
+          category: "Vegetable",
+          description: "Fresh red tomatoes for hotels and bulk kitchens.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C002",
+          name: "Potato",
+          price: "28",
+          quantity: "300",
+          category: "Vegetable",
+          description: "Bulk potato stock available for daily restaurant supply.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C003",
+          name: "Onion",
+          price: "34",
+          quantity: "250",
+          category: "Vegetable",
+          description: "Medium size onions suitable for curries and bulk orders.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C004",
+          name: "Carrot",
+          price: "40",
+          quantity: "90",
+          category: "Vegetable",
+          description: "Crunchy carrots with fresh quality and good shelf life.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C005",
+          name: "Cabbage",
+          price: "24",
+          quantity: "140",
+          category: "Vegetable",
+          description: "Green cabbage best for salads and Chinese cooking.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C006",
+          name: "Cauliflower",
+          price: "36",
+          quantity: "110",
+          category: "Vegetable",
+          description: "Fresh cauliflower harvested this week.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C007",
+          name: "Spinach",
+          price: "18",
+          quantity: "75",
+          category: "Leafy",
+          description: "Green leafy spinach harvested in the morning.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C008",
+          name: "Coriander",
+          price: "12",
+          quantity: "60",
+          category: "Leafy",
+          description: "Fresh coriander bunches with strong aroma.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C009",
+          name: "Brinjal",
+          price: "30",
+          quantity: "95",
+          category: "Vegetable",
+          description: "Purple brinjal for curry and fry items.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C010",
+          name: "Green Chilli",
+          price: "48",
+          quantity: "55",
+          category: "Vegetable",
+          description: "Spicy green chillies for restaurants and retail.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C011",
+          name: "Rice",
+          price: "52",
+          quantity: "500",
+          category: "Grain",
+          description: "Premium rice stock suitable for hotels and mess supply.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C012",
+          name: "Wheat",
+          price: "38",
+          quantity: "420",
+          category: "Grain",
+          description: "Clean wheat stock for flour mills and kitchens.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C013",
+          name: "Maize",
+          price: "26",
+          quantity: "380",
+          category: "Grain",
+          description: "Dry maize stock for feed and bulk buyers.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C014",
+          name: "Jowar",
+          price: "34",
+          quantity: "210",
+          category: "Grain",
+          description: "Healthy jowar stock with good quality grains.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        },
+        {
+          id: "C015",
+          name: "Bajra",
+          price: "30",
+          quantity: "190",
+          category: "Grain",
+          description: "Nutritious bajra stock for regular supply.",
+          farmerName: lead.fullName,
+          farmerEmail: lead.email,
+          phone: lead.phone,
+          location: lead.village
+        }
+      ];
+    }
+
+    function seedDemoData() {
+      const existingLead = JSON.parse(localStorage.getItem("leadApplicationData") || "null");
+      const existingFarmers = JSON.parse(localStorage.getItem("farmers") || "[]");
+      const existingFarmer = JSON.parse(localStorage.getItem("farmer") || "null");
+
+      if (!existingLead) {
+        localStorage.setItem("leadApplicationData", JSON.stringify(getDemoLead()));
+      }
+
+      const lead = JSON.parse(localStorage.getItem("leadApplicationData") || "{}");
+
+      if (!existingFarmer) {
+        const demoFarmer = getDemoFarmer(lead);
+        localStorage.setItem("farmer", JSON.stringify(demoFarmer));
+      }
+
+      if (existingFarmers.length === 0) {
+        const demoFarmer = getDemoFarmer(lead);
+        const demoCrops = getDemoCrops(lead);
+        demoFarmer.crops = demoCrops;
+        localStorage.setItem("farmers", JSON.stringify([demoFarmer]));
+      }
+
+      const existingCrops = JSON.parse(localStorage.getItem("crops") || "[]");
+      if (existingCrops.length === 0) {
+        localStorage.setItem("crops", JSON.stringify(getDemoCrops(lead)));
+      }
+    }
+
+    function saveLeadDetails() {
+      const fullName = document.getElementById("leadFullName").value.trim();
+      const email = document.getElementById("leadEmail").value.trim();
+      const phone = document.getElementById("leadPhone").value.trim();
+      const village = document.getElementById("leadVillage").value.trim();
+
+      if (!fullName || !email || !phone || !village) {
+        alert(t("alertFillLead"));
+        return;
+      }
+
+      const leadData = { fullName, email, phone, village };
+      localStorage.setItem("leadApplicationData", JSON.stringify(leadData));
+
+      let farmer = JSON.parse(localStorage.getItem("farmer") || "{}");
+      farmer.email = email;
+      farmer.phone = phone;
+
+      if (!farmer.name) farmer.name = fullName;
+      if (!farmer.location) farmer.location = village;
+
+      localStorage.setItem("farmer", JSON.stringify(farmer));
+
+      let farmers = JSON.parse(localStorage.getItem("farmers") || "[]");
+      const oldIndex = farmers.findIndex(f => f.email === email || f.phone === phone);
+
+      if (oldIndex !== -1) {
+        farmers[oldIndex].email = email;
+        farmers[oldIndex].phone = phone;
+        if (!farmers[oldIndex].name) farmers[oldIndex].name = fullName;
+        if (!farmers[oldIndex].location) farmers[oldIndex].location = village;
+      } else if (farmer.name || farmer.bankName || (farmer.crops && farmer.crops.length >= 0)) {
+        farmers.push({
+          ...farmer,
+          email,
+          phone,
+          name: farmer.name || fullName,
+          location: farmer.location || village,
+          crops: farmer.crops || []
+        });
+      }
+
+      localStorage.setItem("farmers", JSON.stringify(farmers));
+
+      document.getElementById("leadMessage").innerText = t("leadSaved");
+      loadLeadDetails();
+      loadSavedFarmer();
+      displayCrops();
+      updateStats();
+    }
+
+    function resetToDemoLead() {
+      const demoLead = getDemoLead();
+      localStorage.setItem("leadApplicationData", JSON.stringify(demoLead));
+      loadLeadInputs();
+      loadLeadDetails();
+      document.getElementById("leadMessage").innerText = t("demoReset");
+    }
+
+    function loadLeadInputs() {
+      const lead = JSON.parse(localStorage.getItem("leadApplicationData") || "{}");
+      document.getElementById("leadFullName").value = lead.fullName || "";
+      document.getElementById("leadEmail").value = lead.email || "";
+      document.getElementById("leadPhone").value = lead.phone || "";
+      document.getElementById("leadVillage").value = lead.village || "";
+    }
+
+    function loadLeadDetails() {
+      const lead = JSON.parse(localStorage.getItem("leadApplicationData") || "{}");
+      const box = document.getElementById("leadDetails");
+
+      box.innerHTML = `
+        <div class="info-row"><b>${t("previewLeadName")}:</b> ${lead.fullName || "-"}</div>
+        <div class="info-row"><b>${t("previewLeadEmail")}:</b> ${lead.email || "-"}</div>
+        <div class="info-row"><b>${t("previewLeadPhone")}:</b> ${lead.phone || "-"}</div>
+        <div class="info-row"><b>${t("previewVillage")}:</b> ${lead.village || "-"}</div>
+      `;
+    }
+
+    function saveFarmer() {
+      const lead = JSON.parse(localStorage.getItem("leadApplicationData") || "{}");
+
+      const farmerName = document.getElementById("farmerName").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const bankName = document.getElementById("bankName").value.trim();
+      const accountHolder = document.getElementById("accountHolder").value.trim();
+      const accountNumber = document.getElementById("accountNumber").value.trim();
+      const ifscCode = document.getElementById("ifscCode").value.trim();
+
+      if (!farmerName || !location || !bankName || !accountHolder || !accountNumber || !ifscCode) {
+        alert(t("alertFillFarmer"));
+        return;
+      }
+
+      let farmers = JSON.parse(localStorage.getItem("farmers") || "[]");
+      let currentFarmer = JSON.parse(localStorage.getItem("farmer") || "null");
+
+      const farmerData = {
+        id: currentFarmer?.id || Date.now().toString(),
+        name: farmerName,
+        email: lead.email || "",
+        phone: lead.phone || "",
+        location: location,
+        bankName,
+        accountHolder,
+        accountNumber,
+        ifscCode,
+        crops: currentFarmer?.crops || []
+      };
+
+      const existingIndex = farmers.findIndex(f => f.email === farmerData.email || f.phone === farmerData.phone);
+
+      if (existingIndex !== -1) {
+        farmerData.crops = farmers[existingIndex].crops || [];
+        farmers[existingIndex] = farmerData;
+      } else {
+        farmers.push(farmerData);
+      }
+
+      localStorage.setItem("farmers", JSON.stringify(farmers));
+      localStorage.setItem("farmer", JSON.stringify(farmerData));
+
+      document.getElementById("profileMessage").innerText = t("farmerSaved");
+      loadSavedFarmer();
+      displayCrops();
+      updateStats();
+    }
+
+    function loadSavedFarmer() {
+      const farmer = JSON.parse(localStorage.getItem("farmer") || "{}");
+
+      document.getElementById("farmerName").value = farmer.name || "";
+      document.getElementById("location").value = farmer.location || "";
+      document.getElementById("bankName").value = farmer.bankName || "";
+      document.getElementById("accountHolder").value = farmer.accountHolder || "";
+      document.getElementById("accountNumber").value = farmer.accountNumber || "";
+      document.getElementById("ifscCode").value = farmer.ifscCode || "";
+
+      const preview = document.getElementById("savedBankPreview");
+      if (farmer.bankName) {
+        preview.innerHTML = `
+          <div class="info-row"><b>${t("previewBankName")}:</b> ${farmer.bankName}</div>
+          <div class="info-row"><b>${t("previewAccountHolder")}:</b> ${farmer.accountHolder}</div>
+          <div class="info-row"><b>${t("previewAccountNumber")}:</b> ${farmer.accountNumber}</div>
+          <div class="info-row"><b>${t("previewIfsc")}:</b> ${farmer.ifscCode}</div>
+        `;
+      } else {
+        preview.innerHTML = t("noBankDetails");
+      }
+    }
+
+    function addCrop() {
+      const farmer = JSON.parse(localStorage.getItem("farmer") || "{}");
+      const lead = JSON.parse(localStorage.getItem("leadApplicationData") || "{}");
+
+      if (!farmer.name) {
+        alert(t("alertSaveFarmerFirst"));
+        return;
+      }
+
+      const cropName = document.getElementById("cropName").value.trim();
+      const cropPrice = document.getElementById("cropPrice").value.trim();
+      const cropQuantity = document.getElementById("cropQuantity").value.trim();
+      const cropCategory = document.getElementById("cropCategory").value;
+      const cropDescription = document.getElementById("cropDescription").value.trim();
+
+      if (!cropName || !cropPrice || !cropQuantity) {
+        alert(t("alertFillCrop"));
+        return;
+      }
+
+      const crop = {
+        id: Date.now().toString(),
+        name: cropName,
+        price: cropPrice,
+        quantity: cropQuantity,
+        category: cropCategory,
+        description: cropDescription,
+        farmerName: farmer.name,
+        farmerphone: farmer.phone,
+        farmerEmail: lead.email || farmer.email || "",
+        phone: lead.phone || farmer.phone || "",
+        location: farmer.location || lead.village || ""
+      };
+
+      let crops = JSON.parse(localStorage.getItem("crops") || "[]");
+      crops.push(crop);
+      localStorage.setItem("crops", JSON.stringify(crops));
+
+      let farmers = JSON.parse(localStorage.getItem("farmers") || "[]");
+      const farmerIndex = farmers.findIndex(f => f.email === (lead.email || farmer.email) || f.phone === (lead.phone || farmer.phone));
+
+      if (farmerIndex !== -1) {
+        farmers[farmerIndex].crops = farmers[farmerIndex].crops || [];
+        farmers[farmerIndex].crops.push(crop);
+        localStorage.setItem("farmers", JSON.stringify(farmers));
+        localStorage.setItem("farmer", JSON.stringify(farmers[farmerIndex]));
+      }
+
+      document.getElementById("cropName").value = "";
+      document.getElementById("cropPrice").value = "";
+      document.getElementById("cropQuantity").value = "";
+      document.getElementById("cropDescription").value = "";
+      document.getElementById("cropCategory").value = "Vegetable";
+      document.getElementById("cropMessage").innerText = t("cropSaved");
+
+      displayCrops();
+      updateStats();
+    }
+
+    function displayCrops() {
+      const farmer = JSON.parse(localStorage.getItem("farmer") || "{}");
+      const container = document.getElementById("farmerCrops");
+      container.innerHTML = "";
+
+      if (!farmer.crops || farmer.crops.length === 0) {
+        container.innerHTML = `<div class="empty">${t("noCrops")}</div>`;
+        return;
+      }
+
+      farmer.crops.forEach(crop => {
+        container.innerHTML += `
+          <div class="crop-card">
+            <div class="crop-badge">${crop.category || t("cropDefaultBadge")}</div>
+            <h3>${crop.name}</h3>
+            <div class="price">₹${crop.price}/kg</div>
+            <p><b>${t("cropCardQuantity")}:</b> ${crop.quantity || "-"} kg</p>
+            <p><b>${t("cropCardFarmer")}:</b> ${crop.farmerName || "-"}</p>
+            <p><b>${t("cropCardLeadPhone")}:</b> ${crop.phone || "-"}</p>
+            <p><b>${t("cropCardLeadEmail")}:</b> ${crop.farmerEmail || "-"}</p>
+            <p><b>${t("cropCardLocation")}:</b> ${crop.location || "-"}</p>
+            <p><b>${t("cropCardDescription")}:</b> ${crop.description || "-"}</p>
+          </div>
+        `;
+      });
+    }
+
+    function updateStats() {
+      const farmer = JSON.parse(localStorage.getItem("farmer") || "{}");
+      const totalCrops = farmer.crops ? farmer.crops.length : 0;
+
+      let filled = 0;
+      if (farmer.name) filled++;
+      if (farmer.location) filled++;
+      if (farmer.bankName) filled++;
+      if (farmer.accountHolder) filled++;
+      if (farmer.accountNumber) filled++;
+      if (farmer.ifscCode) filled++;
+
+      const percent = Math.round((filled / 6) * 100);
+      document.getElementById("totalCrops").innerText = totalCrops;
+      document.getElementById("profileStatus").innerText = percent + "%";
+    }
+
+    seedDemoData();
+    loadLeadInputs();
+    loadLeadDetails();
+    loadSavedFarmer();
+    displayCrops();
+    updateStats();
+
+    currentLanguage = localStorage.getItem("farmerDashboardLang") || "en";
+    applyLanguage(currentLanguage);
+  </script>
+</body>
+</html>

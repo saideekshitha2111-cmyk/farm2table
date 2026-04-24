@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login - Farm2Table</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e8f5e9, #f8fbf6);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 430px;
+      background: #fff;
+      padding: 32px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+      color: #2e7d32;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #1b5e20;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      margin-bottom: 18px;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2e7d32;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #256628;
+    }
+
+    .error {
+      margin-top: 14px;
+      color: #c62828;
+      text-align: center;
+      font-weight: bold;
+      min-height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>Admin Login</h1>
+    <div class="subtitle">
+      Login with admin email and password
+    </div>
+
+    <form id="adminLoginForm">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter admin email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" required />
+
+      <button type="submit">Login</button>
+      <div class="error" id="errorText"></div>
+    </form>
+  </div>
+
+  <script>
+    const ADMIN_EMAIL = "saideekshitha2111@gmail.com";
+    const ADMIN_PASSWORD = "deeksho2007";
+
+    document.getElementById("adminLoginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const errorText = document.getElementById("errorText");
+
+      if (email === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
+        localStorage.setItem("isAdminLoggedIn", "true");
+        localStorage.setItem("adminEmail", ADMIN_EMAIL);
+        window.location.href = "admin.html";
+      } else {
+        localStorage.removeItem("isAdminLoggedIn");
+        localStorage.removeItem("adminEmail");
+        errorText.innerText = "Invalid admin email or password";
+      }
+    });
+  </script>
+</body>
+</html>

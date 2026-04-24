@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farm2Table Crops Marketplace</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef8ea, #f8fbf6);
+      color: #222;
+    }
+
+    .header {
+      background: linear-gradient(90deg, #1b5e20, #2e7d32);
+      color: white;
+      padding: 22px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .header a {
+      text-decoration: none;
+      background: white;
+      color: #2e7d32;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: 24px auto 0;
+      padding: 0 20px;
+    }
+
+    .hero-box {
+      background: white;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero-box h2 {
+      margin: 0 0 10px;
+      color: #1b5e20;
+      font-size: 34px;
+    }
+
+    .hero-box p {
+      margin: 0;
+      color: #555;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .mini-card {
+      background: #f7fbf5;
+      border: 1px solid #dfe7dc;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      color: #2e7d32;
+      font-size: 15px;
+    }
+
+    .mini-card p {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+      color: #1f1f1f;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 20px 30px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 220px 220px;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d5dfd3;
+      border-radius: 12px;
+      font-size: 15px;
+      background: white;
+      outline: none;
+    }
+
+    .section-title {
+      margin: 14px 0 18px;
+      color: #1b5e20;
+      font-size: 28px;
+    }
+
+    .crop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .crop-card {
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .crop-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-top {
+      background: linear-gradient(135deg, #dff6dd, #ffffff);
+      padding: 18px 20px 14px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .tag.green {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .tag.blue {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .tag.orange {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+
+    .crop-name {
+      margin: 0;
+      font-size: 28px;
+      color: #1b5e20;
+    }
+
+    .price {
+      margin-top: 10px;
+      font-size: 30px;
+      font-weight: bold;
+      color: #111;
+    }
+
+    .card-body {
+      padding: 18px 20px 20px;
+    }
+
+    .line {
+      margin: 8px 0;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    .line b {
+      color: #1b5e20;
+    }
+
+    .bank-box {
+      background: #f7fbf5;
+      border: 1px solid #dfe7dc;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 14px;
+    }
+
+    .bank-box h4 {
+      margin: 0 0 8px;
+      color: #2e7d32;
+      font-size: 16px;
+    }
+
+    .order-box {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .order-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .qty-input {
+      width: 110px;
+      padding: 10px 12px;
+      border: 1px solid #d5dfd3;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .btn {
+      border: none;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-order {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .btn-call {
+      background: #1565c0;
+      color: white;
+    }
+
+    .empty {
+      background: #fff8e1;
+      color: #7a5d00;
+      padding: 20px;
+      border-radius: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    .footer-note {
+      margin-top: 26px;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-box,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-box h2 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🌾 Farm2Table Crops Marketplace</h1>
+    <a href="restaurant.html">Back to Restaurant</a>
+  </div>
+
+  <div class="hero">
+    <div class="hero-box">
+      <div>
+        <h2>Fresh Crops Ready for Orders</h2>
+        <p>
+          Explore vegetables, grains, leafy crops, and more.
+          Every card shows crop quantity, lead details, banking details, and order options.
+        </p>
+      </div>
+
+      <div class="mini-stats">
+        <div class="mini-card">
+          <h3>Total Crops</h3>
+          <p id="totalCrops">0</p>
+        </div>
+        <div class="mini-card">
+          <h3>Total Farmers</h3>
+          <p id="totalFarmers">0</p>
+        </div>
+        <div class="mini-card">
+          <h3>Categories</h3>
+          <p id="totalCategories">0</p>
+        </div>
+        <div class="mini-card">
+          <h3>Status</h3>
+          <p>Live</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search crop name, farmer, or location" oninput="renderCrops()">
+      
+      <select id="categoryFilter" onchange="renderCrops()">
+        <option value="All">All Categories</option>
+        <option value="Vegetable">Vegetables</option>
+        <option value="Grain">Grains</option>
+        <option value="Leafy">Leafy</option>
+        <option value="Fruit">Fruits</option>
+        <option value="Pulse">Pulses</option>
+      </select>
+
+      <select id="sortFilter" onchange="renderCrops()">
+        <option value="default">Sort By</option>
+        <option value="lowToHigh">Price: Low to High</option>
+        <option value="highToLow">Price: High to Low</option>
+        <option value="quantityHigh">Quantity: High to Low</option>
+      </select>
+    </div>
+
+    <h2 class="section-title">Available Crops</h2>
+    <div id="cropList" class="crop-grid"></div>
+
+    <div class="footer-note">
+      Fresh from farmers • Direct lead details • Easy restaurant ordering
+    </div>
+  </div>
+
+  <script>
+    function getAllCropsFromFarmers() {
+      const farmers = JSON.parse(localStorage.getItem("farmers") || "[]");
+      let allCrops = [];
+
+      farmers.forEach(farmer => {
+        const farmerCrops = farmer.crops || [];
+        farmerCrops.forEach(crop => {
+          allCrops.push({
+            ...crop,
+            farmerName: farmer.name || crop.farmerName || "-",
+            farmerEmail: farmer.email || crop.farmerEmail || "-",
+            phone: farmer.phone || crop.phone || "-",
+            location: farmer.location || crop.location || "-",
+            bankName: farmer.bankName || "-",
+            accountHolder: farmer.accountHolder || "-",
+            accountNumber: farmer.accountNumber || "-",
+            ifscCode: farmer.ifscCode || "-"
+          });
+        });
+      });
+
+      return allCrops;
+    }
+
+    function updateStats(crops) {
+      const farmers = JSON.parse(localStorage.getItem("farmers") || "[]");
+      const categories = [...new Set(crops.map(c => c.category || "Other"))];
+
+      document.getElementById("totalCrops").innerText = crops.length;
+      document.getElementById("totalFarmers").innerText = farmers.length;
+      document.getElementById("totalCategories").innerText = categories.length;
+    }
+
+    function placeOrder(cropId) {
+      const crops = getAllCropsFromFarmers();
+      const crop = crops.find(c => c.id === cropId);
+
+      if (!crop) {
+        alert("Crop not found");
+        return;
+      }
+
+      const qtyInput = document.getElementById("qty-" + cropId);
+      const quantityWanted = Number(qtyInput.value);
+
+      if (!quantityWanted || quantityWanted <= 0) {
+        alert("Please enter a valid quantity");
+        return;
+      }
+
+      const availableQty = Number(crop.quantity || 0);
+
+      if (quantityWanted > availableQty) {
+        alert("Requested quantity exceeds available stock");
+        return;
+      }
+
+      const totalPrice = quantityWanted * Number(crop.price || 0);
+
+      const order = {
+        orderId: "ORD-" + Date.now(),
+        cropId: crop.id,
+        cropName: crop.name,
+        category: crop.category,
+        pricePerKg: crop.price,
+        orderedQuantity: quantityWanted,
+        totalPrice: totalPrice,
+        farmerName: crop.farmerName,
+        leadPhone: crop.phone,
+        leadEmail: crop.farmerEmail,
+        location: crop.location,
+        bankName: crop.bankName,
+        accountHolder: crop.accountHolder,
+        accountNumber: crop.accountNumber,
+        ifscCode: crop.ifscCode,
+        orderDate: new Date().toLocaleString()
+      };
+
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      orders.push(order);
+      localStorage.setItem("orders", JSON.stringify(orders));
+      localStorage.setItem("latestOrder", JSON.stringify(order));
+
+      alert(
+        "Order placed successfully!\n\n" +
+        "Crop: " + crop.name +
+        "\nQuantity: " + quantityWanted + " kg" +
+        "\nTotal Price: ₹" + totalPrice
+      );
+    }
+
+    function openWhatsApp(phone, cropName) {
+      const cleanedPhone = String(phone).replace(/\D/g, "");
+      const message = encodeURIComponent("Hello, I want to order " + cropName + " from Farm2Table.");
+      window.open("https://wa.me/91" + cleanedPhone + "?text=" + message, "_blank");
+    }
+
+    function callFarmer(phone) {
+      window.location.href = "tel:" + phone;
+    }
+
+    function renderCrops() {
+      const container = document.getElementById("cropList");
+      const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
+      const category = document.getElementById("categoryFilter").value;
+      const sortBy = document.getElementById("sortFilter").value;
+
+      let crops = getAllCropsFromFarmers();
+
+      if (searchText) {
+        crops = crops.filter(crop =>
+          (crop.name || "").toLowerCase().includes(searchText) ||
+          (crop.farmerName || "").toLowerCase().includes(searchText) ||
+          (crop.location || "").toLowerCase().includes(searchText)
+        );
+      }
+
+      if (category !== "All") {
+        crops = crops.filter(crop => (crop.category || "") === category);
+      }
+
+      if (sortBy === "lowToHigh") {
+        crops.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+      } else if (sortBy === "highToLow") {
+        crops.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+      } else if (sortBy === "quantityHigh") {
+        crops.sort((a, b) => Number(b.quantity || 0) - Number(a.quantity || 0));
+      }
+
+      updateStats(crops);
+      container.innerHTML = "";
+
+      if (crops.length === 0) {
+        container.innerHTML = `<div class="empty">No crops found.</div>`;
+        return;
+      }
+
+      crops.forEach(crop => {
+        container.innerHTML += `
+          <div class="crop-card">
+            <div class="card-top">
+              <div class="tag-row">
+                <span class="tag green">${crop.category || "Crop"}</span>
+                <span class="tag blue">Qty: ${crop.quantity || "-"} kg</span>
+                <span class="tag orange">Fresh Stock</span>
+              </div>
+              <h3 class="crop-name">${crop.name || "-"}</h3>
+              <div class="price">₹${crop.price || "-"}/kg</div>
+            </div>
+
+            <div class="card-body">
+              <div class="line"><b>Farmer Name:</b> ${crop.farmerName || "-"}</div>
+              <div class="line"><b>Lead Phone:</b> ${crop.phone || "-"}</div>
+              <div class="line"><b>Lead Email:</b> ${crop.farmerEmail || "-"}</div>
+              <div class="line"><b>Location:</b> ${crop.location || "-"}</div>
+              <div class="line"><b>Description:</b> ${crop.description || "Fresh quality crop available for direct orders."}</div>
+
+              <div class="bank-box">
+                <h4>Banking Details</h4>
+                <div class="line"><b>Bank Name:</b> ${crop.bankName || "-"}</div>
+                <div class="line"><b>Account Holder:</b> ${crop.accountHolder || "-"}</div>
+                <div class="line"><b>Account Number:</b> ${crop.accountNumber || "-"}</div>
+                <div class="line"><b>IFSC Code:</b> ${crop.ifscCode || "-"}</div>
+              </div>
+
+              <div class="order-box">
+                <div class="order-row">
+                  <input
+                    type="number"
+                    min="1"
+                    max="${crop.quantity || 1}"
+                    id="qty-${crop.id}"
+                    class="qty-input"
+                    placeholder="Qty kg"
+                  >
+                  <button class="btn btn-order" onclick="placeOrder('${crop.id}')">Order Now</button>
+                </div>
+
+                <div class="order-row">
+                  <button class="btn btn-whatsapp" onclick="openWhatsApp('${crop.phone}', '${crop.name}')">WhatsApp</button>
+                  <button class="btn btn-call" onclick="callFarmer('${crop.phone}')">Call</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    renderCrops();
+  </script>
+
+</body>
+</html>
